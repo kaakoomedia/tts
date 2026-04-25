@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8" />
 
-  <!-- 🔒 Disable pinch zoom -->
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>Generate Speech</title>
-
-  <!-- CSS -->
   <link rel="stylesheet" href="./style/style.css" />
 </head>
 
@@ -17,7 +14,6 @@
 
 <div class="app">
 
-  <!-- HEADER -->
   <div class="header">
     <h1>Generate Speech</h1>
 
@@ -27,56 +23,91 @@
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main-layout">
 
-    <!-- LEFT PANEL -->
     <section class="left-panel">
 
       <div class="voice-row">
         <label>Character Voice</label>
 
-        <select id="voice">
-  <optgroup label="Khmer Male Voices">
-    <option value='{"voice":"Kore","style":"calm Khmer documentary male voice"}'>Bora (Calm)</option>
-    <option value='{"voice":"Charon","style":"deep Khmer male storyteller voice"}'>Tola (Deep)</option>
-    <option value='{"voice":"Fenrir","style":"young energetic Khmer male voice"}'>Dara (Energetic)</option>
-    <option value='{"voice":"Orus","style":"wise elder Khmer male voice"}'>Sokha (Wise)</option>
-    <option value='{"voice":"Iapetus","style":"confident Khmer male news reporter"}'>Rithy (Reporter)</option>
-  </optgroup>
+        <div class="voice-list" id="voiceList">
 
-  <optgroup label="Khmer Female Voices">
-    <option value='{"voice":"Aoede","style":"warm friendly Khmer female voice"}'>Theary (Warm)</option>
-    <option value='{"voice":"Leda","style":"soft emotional Khmer female voice"}'>Maly (Emotional)</option>
-    <option value='{"voice":"Zephyr","style":"elegant Khmer female narrator"}'>Nary (Elegant)</option>
-    <option value='{"voice":"Despina","style":"patient Khmer female teacher voice"}'>Sreyka (Teacher)</option>
-    <option value='{"voice":"Callirrhoe","style":"mysterious cinematic Khmer female voice"}'>Chenda (Cinematic)</option>
-  </optgroup>
-</select>
+          <div class="voice-group-title">Khmer Male Voices</div>
+
+          <div class="voice-item active" data-voice="Kore" data-name="Bora">
+            <span>Bora (Calm)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Puck" data-name="Tola">
+            <span>Tola (Deep)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Charon" data-name="Dara">
+            <span>Dara (Energetic)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Fenrir" data-name="Sokha">
+            <span>Sokha (Wise)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Orus" data-name="Rithy">
+            <span>Rithy (Reporter)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-group-title">Khmer Female Voices</div>
+
+          <div class="voice-item" data-voice="Leda" data-name="Theary">
+            <span>Theary (Warm)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Aoede" data-name="Maly">
+            <span>Maly (Emotional)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Callirrhoe" data-name="Nary">
+            <span>Nary (Elegant)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Autonoe" data-name="Sreyka">
+            <span>Sreyka (Teacher)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+          <div class="voice-item" data-voice="Zephyr" data-name="Chenda">
+            <span>Chenda (Cinematic)</span>
+            <button class="play-btn" type="button">▶</button>
+          </div>
+
+        </div>
 
         <div class="counter">
           <span id="charCount">0</span>/50000
         </div>
       </div>
 
-      <!-- TEXT INPUT -->
       <textarea
         id="text"
         maxlength="50000"
         placeholder="Type or paste your text here to generate speech..."
       ></textarea>
 
-      <!-- STATUS -->
       <div id="status"></div>
 
     </section>
 
-    <!-- RIGHT PANEL -->
     <section class="right-panel">
 
       <div id="resultList" class="result-list"></div>
 
-      <button id="btn" class="generate-btn" onclick="generate()">
+      <button id="btn" class="generate-btn" type="button">
         Generate Speech
       </button>
 
@@ -86,18 +117,7 @@
 
 </div>
 
-<!-- JS -->
 <script src="./js/script.js"></script>
-
-<!-- 🔢 Character counter -->
-<script>
-const textarea = document.getElementById("text");
-const counter = document.getElementById("charCount");
-
-textarea.addEventListener("input", () => {
-  counter.innerText = textarea.value.length;
-});
-</script>
 
 </body>
 </html>

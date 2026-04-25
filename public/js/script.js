@@ -1,20 +1,86 @@
-async function generate() {
-  const text = document.getElementById("text").value.trim();
-  const raw = document.getElementById("voice").value;
-  const { voice, style } = JSON.parse(raw);
+let selectedVoice = "Kore";
+let selectedVoiceName = "Bora";
 
-  const btn = document.getElementById("btn");
-  const status = document.getElementById("status");
-  const resultList = document.getElementById("resultList");
+const textarea = document.getElementById("text");
+const counter = document.getElementById("charCount");
+const statusBox = document.getElementById("status");
+const resultList = document.getElementById("resultList");
+const generateBtn = document.getElementById("btn");
+const voiceItems = document.querySelectorAll(".voice-item");
+
+textarea.addEventListener("input", () => {
+  counter.innerText = textarea.value.length;
+});
+
+voiceItems.forEach((item) => {
+  const playBtn = item.querySelector(".play-btn");
+
+  item.addEventListener("click", () => {
+    voiceItems.forEach((v) => v.classList.remove("active"));
+    item.classList.add("active");
+
+    selectedVoice = item.dataset.voice;
+    selectedVoiceName = item.dataset.name;
+  });
+
+  playBtn.addEventListener("click", async (e) => {
+    e.stopPropagation();
+
+    const voice = item.dataset.voice;
+    const voiceName = item.dataset.name;
+
+    playBtn.disabled = true;
+    playBtn.innerText = "⏳";
+    statusBox.innerText = `Previewing ${voiceName} voice...`;
+
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text: "សួស្តី នេះគឺជាសំឡេងសាកល្បងដែលលោកអ្នកអាចជ្រើសរើសយកបាន។",
+          voice: voice,
+          style: "short natural Khmer voice preview"
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error("Preview failed");
+      }
+
+      const blob = await res.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+
+      await audio.play();
+
+      statusBox.innerText = `${voiceName} preview playing.`;
+    } catch (error) {
+      console.error(error);
+      statusBox.innerText = "Preview failed.";
+      alert("Preview failed.");
+    } finally {
+      playBtn.disabled = false;
+      playBtn.innerText = "▶";
+    }
+  });
+});
+
+generateBtn.addEventListener("click", generate);
+
+async function generate() {
+  const text = textarea.value.trim();
 
   if (!text) {
-    status.innerText = "⚠️ Please enter text first.";
+    alert("Please enter text first.");
     return;
   }
 
-  btn.disabled = true;
-  btn.innerText = "Generating...";
-  status.innerText = "⏳ Generating voice, please wait...";
+  generateBtn.disabled = true;
+  generateBtn.innerText = "Generating...";
+  statusBox.innerText = "Generating speech...";
 
   try {
     const res = await fetch("/api/tts", {
@@ -22,51 +88,45 @@ async function generate() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ text, voice, style })
+      body: JSON.stringify({
+        text: text,
+        voice: selectedVoice,
+        style: "natural Khmer narrator"
+      })
     });
 
     if (!res.ok) {
-      throw new Error("Server error");
+      throw new Error("Generate failed");
     }
 
     const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+    const audioUrl = URL.createObjectURL(blob);
 
     const card = document.createElement("div");
-    card.className = "result-card";
+    card.className = "audio-card";
 
-    card.innerHTML = `
-      <div class="result-top">
-        <button class="play-btn">▶</button>
+    const title = document.createElement("div");
+    title.className = "audio-title";
+    title.innerText = `Voice: ${selectedVoiceName}`;
 
-        <div class="result-info">
-          <div class="result-title">Untitled</div>
-          <div class="result-meta">Just now · ${style}</div>
-        </div>
-      </div>
+    const audio = document.createElement("audio");
+    audio.controls = true;
+    audio.src = audioUrl;
 
-      <div class="result-text">${text}</div>
-
-      <audio class="result-audio" controls src="${url}"></audio>
-    `;
-
-    const playBtn = card.querySelector(".play-btn");
-    const audio = card.querySelector("audio");
-
-    playBtn.addEventListener("click", () => {
-      audio.play();
-    });
+    card.appendChild(title);
+    card.appendChild(audio);
 
     resultList.prepend(card);
 
-    audio.play();
+    await audio.play();
 
-    status.innerText = "✅ Voice generated successfully!";
-  } catch (err) {
-    console.error(err);
-    status.innerText = "❌ Failed to generate voice.";
+    statusBox.innerText = "Completed.";
+  } catch (error) {
+    console.error(error);
+    statusBox.innerText = "Generate failed.";
+    alert("Generate failed.");
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.innerText = "Generate Speech";
   }
-
-  btn.disabled = false;
-  btn.innerText = "Generate Speech";
 }
