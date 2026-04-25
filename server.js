@@ -19,6 +19,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public")); // serve frontend
 
+app.get("/", (req, res) => {
+  res.sendFile(process.cwd() + "/public/index.html");
+});
+
 // ✅ Convert PCM → WAV
 function pcmToWav(pcmBuffer, sampleRate = 24000, numChannels = 1, bitsPerSample = 16) {
   const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
