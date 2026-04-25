@@ -116,6 +116,14 @@ ${text}
   }
 });
 
+app.get("/", (req, res) => {
+  res.sendFile(process.cwd() + "/public/index.html");
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found", path: req.path });
+});
+
 // ✅ Start server (Render compatible)
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
