@@ -16,6 +16,7 @@ body {
   padding: 22px;
 }
 
+/* HEADER */
 .header {
   max-width: 1200px;
   margin: 0 auto 18px;
@@ -35,6 +36,7 @@ body {
   font-size: 20px;
 }
 
+/* MAIN LAYOUT */
 .main-layout {
   max-width: 1200px;
   margin: auto;
@@ -58,47 +60,81 @@ body {
   margin-bottom: 10px;
 }
 
-.voice-list {
+/* CUSTOM DROPDOWN */
+.voice-dropdown {
+  position: relative;
   width: 100%;
+}
+
+.voice-selected {
+  width: 100%;
+  padding: 14px;
   background: #020617;
   border: 1px solid #334155;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.voice-group-title {
-  font-weight: 700;
-  padding: 12px 14px 8px;
-  background: #1e293b;
+  border-radius: 12px;
   color: #ffffff;
-  font-size: 15px;
-}
-
-.voice-item {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 11px 14px;
-  cursor: pointer;
+}
+
+.voice-selected:hover {
+  border-color: #2563eb;
+}
+
+.arrow {
+  font-size: 12px;
+}
+
+.voice-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  max-height: 340px;
+  overflow-y: auto;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  z-index: 100;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.voice-dropdown.open .voice-menu {
+  display: block;
+}
+
+.voice-group-title {
+  padding: 10px 14px;
+  font-weight: 700;
+  background: #1e293b;
   color: #ffffff;
+  font-size: 14px;
+}
+
+.voice-option {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  cursor: pointer;
   border-bottom: 1px solid #1e293b;
 }
 
-.voice-item:hover {
+.voice-option:hover {
   background: #1f2937;
 }
 
-.voice-item.active {
+.voice-option.active {
   background: #2563eb;
 }
 
-.voice-item span {
-  font-size: 15px;
-}
-
 .play-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border: none;
   border-radius: 50%;
   background: #ffffff;
@@ -119,6 +155,7 @@ body {
   cursor: not-allowed;
 }
 
+/* COUNTER */
 .counter {
   text-align: right;
   margin: 10px 0;
@@ -126,6 +163,7 @@ body {
   font-size: 14px;
 }
 
+/* TEXTAREA */
 textarea {
   width: 100%;
   min-height: 260px;
@@ -143,6 +181,7 @@ textarea:focus {
   border-color: #2563eb;
 }
 
+/* STATUS */
 #status {
   margin-top: 12px;
   min-height: 22px;
@@ -150,6 +189,7 @@ textarea:focus {
   font-size: 14px;
 }
 
+/* RESULT */
 .result-list {
   display: flex;
   flex-direction: column;
@@ -173,6 +213,7 @@ audio {
   width: 100%;
 }
 
+/* BUTTON */
 .generate-btn {
   width: 100%;
   padding: 15px;
@@ -194,6 +235,7 @@ audio {
   cursor: not-allowed;
 }
 
+/* MOBILE */
 @media (max-width: 850px) {
   .main-layout {
     grid-template-columns: 1fr;

@@ -7,6 +7,7 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>Generate Speech</title>
+
   <link rel="stylesheet" href="./style/style.css" />
 </head>
 
@@ -14,6 +15,7 @@
 
 <div class="app">
 
+  <!-- HEADER -->
   <div class="header">
     <h1>Generate Speech</h1>
 
@@ -23,69 +25,80 @@
     </div>
   </div>
 
+  <!-- MAIN -->
   <div class="main-layout">
 
+    <!-- LEFT PANEL -->
     <section class="left-panel">
 
       <div class="voice-row">
         <label>Character Voice</label>
 
-        <div class="voice-list" id="voiceList">
+        <!-- CUSTOM DROPDOWN VOICE SELECT -->
+        <div class="voice-dropdown" id="voiceDropdown">
 
-          <div class="voice-group-title">Khmer Male Voices</div>
-
-          <div class="voice-item active" data-voice="Kore" data-name="Bora">
-            <span>Bora (Calm)</span>
-            <button class="play-btn" type="button">▶</button>
+          <div class="voice-selected" id="voiceSelected">
+            <span id="selectedVoiceName">Bora (Calm)</span>
+            <span class="arrow">▼</span>
           </div>
 
-          <div class="voice-item" data-voice="Puck" data-name="Tola">
-            <span>Tola (Deep)</span>
-            <button class="play-btn" type="button">▶</button>
+          <div class="voice-menu" id="voiceMenu">
+
+            <div class="voice-group-title">Khmer Male Voices</div>
+
+            <div class="voice-option active" data-voice="Kore" data-name="Bora (Calm)">
+              <span>Bora (Calm)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Puck" data-name="Tola (Deep)">
+              <span>Tola (Deep)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Charon" data-name="Dara (Energetic)">
+              <span>Dara (Energetic)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Fenrir" data-name="Sokha (Wise)">
+              <span>Sokha (Wise)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Orus" data-name="Rithy (Reporter)">
+              <span>Rithy (Reporter)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-group-title">Khmer Female Voices</div>
+
+            <div class="voice-option" data-voice="Leda" data-name="Theary (Warm)">
+              <span>Theary (Warm)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Aoede" data-name="Maly (Emotional)">
+              <span>Maly (Emotional)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Callirrhoe" data-name="Nary (Elegant)">
+              <span>Nary (Elegant)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Autonoe" data-name="Sreyka (Teacher)">
+              <span>Sreyka (Teacher)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
+            <div class="voice-option" data-voice="Zephyr" data-name="Chenda (Cinematic)">
+              <span>Chenda (Cinematic)</span>
+              <button class="play-btn" type="button">▶</button>
+            </div>
+
           </div>
-
-          <div class="voice-item" data-voice="Charon" data-name="Dara">
-            <span>Dara (Energetic)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-item" data-voice="Fenrir" data-name="Sokha">
-            <span>Sokha (Wise)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-item" data-voice="Orus" data-name="Rithy">
-            <span>Rithy (Reporter)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-group-title">Khmer Female Voices</div>
-
-          <div class="voice-item" data-voice="Leda" data-name="Theary">
-            <span>Theary (Warm)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-item" data-voice="Aoede" data-name="Maly">
-            <span>Maly (Emotional)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-item" data-voice="Callirrhoe" data-name="Nary">
-            <span>Nary (Elegant)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-item" data-voice="Autonoe" data-name="Sreyka">
-            <span>Sreyka (Teacher)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
-          <div class="voice-item" data-voice="Zephyr" data-name="Chenda">
-            <span>Chenda (Cinematic)</span>
-            <button class="play-btn" type="button">▶</button>
-          </div>
-
         </div>
 
         <div class="counter">
@@ -93,16 +106,19 @@
         </div>
       </div>
 
+      <!-- TEXT INPUT -->
       <textarea
         id="text"
         maxlength="50000"
         placeholder="Type or paste your text here to generate speech..."
       ></textarea>
 
+      <!-- STATUS -->
       <div id="status"></div>
 
     </section>
 
+    <!-- RIGHT PANEL -->
     <section class="right-panel">
 
       <div id="resultList" class="result-list"></div>

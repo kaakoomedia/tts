@@ -1,37 +1,48 @@
 let selectedVoice = "Kore";
-let selectedVoiceName = "Bora";
+let selectedVoiceName = "Bora (Calm)";
 
 const textarea = document.getElementById("text");
 const counter = document.getElementById("charCount");
 const statusBox = document.getElementById("status");
 const resultList = document.getElementById("resultList");
 const generateBtn = document.getElementById("btn");
-const voiceItems = document.querySelectorAll(".voice-item");
+
+const voiceDropdown = document.getElementById("voiceDropdown");
+const voiceSelected = document.getElementById("voiceSelected");
+const selectedVoiceNameEl = document.getElementById("selectedVoiceName");
+const voiceOptions = document.querySelectorAll(".voice-option");
 
 textarea.addEventListener("input", () => {
   counter.innerText = textarea.value.length;
 });
 
-voiceItems.forEach((item) => {
-  const playBtn = item.querySelector(".play-btn");
+voiceSelected.addEventListener("click", () => {
+  voiceDropdown.classList.toggle("open");
+});
 
-  item.addEventListener("click", () => {
-    voiceItems.forEach((v) => v.classList.remove("active"));
-    item.classList.add("active");
+voiceOptions.forEach((option) => {
+  const playBtn = option.querySelector(".play-btn");
 
-    selectedVoice = item.dataset.voice;
-    selectedVoiceName = item.dataset.name;
+  option.addEventListener("click", () => {
+    voiceOptions.forEach((v) => v.classList.remove("active"));
+    option.classList.add("active");
+
+    selectedVoice = option.dataset.voice;
+    selectedVoiceName = option.dataset.name;
+    selectedVoiceNameEl.innerText = selectedVoiceName;
+
+    voiceDropdown.classList.remove("open");
   });
 
   playBtn.addEventListener("click", async (e) => {
     e.stopPropagation();
 
-    const voice = item.dataset.voice;
-    const voiceName = item.dataset.name;
+    const voice = option.dataset.voice;
+    const name = option.dataset.name;
 
     playBtn.disabled = true;
     playBtn.innerText = "⏳";
-    statusBox.innerText = `Previewing ${voiceName} voice...`;
+    statusBox.innerText = `Previewing ${name}...`;
 
     try {
       const res = await fetch("/api/tts", {
@@ -40,9 +51,9 @@ voiceItems.forEach((item) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          text: "សួស្តី នេះគឺជាសំឡេងសាកល្បងដែលលោកអ្នកអាចជ្រើសរើសយកបាន។",
+          text: "សួស្តី នេះគឺជាសំឡេងសាកល្បង។",
           voice: voice,
-          style: "short natural Khmer voice preview"
+          style: "short Khmer preview"
         })
       });
 
@@ -56,9 +67,9 @@ voiceItems.forEach((item) => {
 
       await audio.play();
 
-      statusBox.innerText = `${voiceName} preview playing.`;
-    } catch (error) {
-      console.error(error);
+      statusBox.innerText = `${name} preview playing.`;
+    } catch (err) {
+      console.error(err);
       statusBox.innerText = "Preview failed.";
       alert("Preview failed.");
     } finally {
@@ -66,6 +77,12 @@ voiceItems.forEach((item) => {
       playBtn.innerText = "▶";
     }
   });
+});
+
+document.addEventListener("click", (e) => {
+  if (!voiceDropdown.contains(e.target)) {
+    voiceDropdown.classList.remove("open");
+  }
 });
 
 generateBtn.addEventListener("click", generate);
@@ -121,8 +138,8 @@ async function generate() {
     await audio.play();
 
     statusBox.innerText = "Completed.";
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     statusBox.innerText = "Generate failed.";
     alert("Generate failed.");
   } finally {
