@@ -41,16 +41,9 @@ voiceOptions.forEach((option) => {
     const voice = option.dataset.voice;
     const name = option.dataset.name;
 
-    // if already playing → stop
-    if (window.currentAudio) {
-      window.currentAudio.pause();
-      window.currentAudio = null;
-      playBtn.innerText = "▶";
-      return;
-    }
-
-    // loading
+    playBtn.disabled = true;
     playBtn.innerText = "⟳";
+    statusBox.innerText = `Loading ${name} preview...`;
 
     try {
       let audioUrl;
@@ -64,11 +57,15 @@ voiceOptions.forEach((option) => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            text: "សួស្តី នេះគឺជាសំឡេងសាកល្បងដែលលោកអ្នកអាចជ្រើសរើសបាន",
+            text: "សួស្តី នេះគឺជាសំឡេងសាកល្បង។",
             voice: voice,
-            style: "preview"
+            style: "short Khmer preview"
           })
         });
+
+        if (!res.ok) {
+          throw new Error("Preview failed");
+        }
 
         const blob = await res.blob();
         audioUrl = URL.createObjectURL(blob);
@@ -76,23 +73,32 @@ voiceOptions.forEach((option) => {
       }
 
       const audio = new Audio(audioUrl);
-      window.currentAudio = audio;
 
-      // playing
+      playBtn.disabled = false;
       playBtn.innerText = "❚❚";
+      statusBox.innerText = `${name} preview playing.`;
 
       audio.onended = () => {
         playBtn.innerText = "▶";
-        window.currentAudio = null;
+        statusBox.innerText = "Preview finished.";
       };
 
-      audio.play();
+      audio.onerror = () => {
+        playBtn.innerText = "▶";
+        statusBox.innerText = "Preview audio error.";
+      };
+
+      await audio.play();
 
     } catch (err) {
       console.error(err);
+      playBtn.disabled = false;
       playBtn.innerText = "▶";
+      statusBox.innerText = "Preview failed.";
+      alert("Preview failed.");
     }
   });
+  
 });
 
 document.addEventListener("click", (e) => {
