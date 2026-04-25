@@ -7,17 +7,22 @@ dotenv.config();
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
+// ✅ Gemini setup
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
+// ✅ Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("public")); // serve frontend
 
+// ✅ Convert PCM → WAV
 function pcmToWav(pcmBuffer, sampleRate = 24000, numChannels = 1, bitsPerSample = 16) {
-  const byteRate = sampleRate * numChannels * bitsPerSample / 8;
-  const blockAlign = numChannels * bitsPerSample / 8;
+  const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+  const blockAlign = (numChannels * bitsPerSample) / 8;
   const wavHeader = Buffer.alloc(44);
 
   wavHeader.write("RIFF", 0);
@@ -37,6 +42,7 @@ function pcmToWav(pcmBuffer, sampleRate = 24000, numChannels = 1, bitsPerSample 
   return Buffer.concat([wavHeader, pcmBuffer]);
 }
 
+// ✅ API route
 app.post("/api/tts", async (req, res) => {
   try {
     const { text, voice, style } = req.body;
@@ -106,6 +112,7 @@ ${text}
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server running: http://localhost:3000");
+// ✅ Start server (Render compatible)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

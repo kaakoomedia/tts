@@ -17,7 +17,7 @@ async function generate() {
   status.innerText = "⏳ Generating voice, please wait...";
 
   try {
-    const res = await fetch("/api/tts", {
+    const res = await fetch("https://tts-fvv0.onrender.com", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
