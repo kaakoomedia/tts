@@ -36,55 +36,63 @@ voiceOptions.forEach((option) => {
   });
 
   playBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
+    e.stopPropagation();
 
-      const voice = option.dataset.voice;
-      const name = option.dataset.name;
+    const voice = option.dataset.voice;
+    const name = option.dataset.name;
+
+    // if already playing → stop
+    if (window.currentAudio) {
+      window.currentAudio.pause();
+      window.currentAudio = null;
+      playBtn.innerText = "▶";
+      return;
+    }
+
+    // loading
+    playBtn.innerText = "⟳";
+
+    try {
+      let audioUrl;
 
       if (previewCache[voice]) {
-        new Audio(previewCache[voice]).play();
-        statusBox.innerText = `${name} preview playing.`;
-        return;
-      }
-
-      playBtn.disabled = true;
-      playBtn.innerText = "⏳";
-      statusBox.innerText = `Creating ${name} preview...`;
-
-      try {
+        audioUrl = previewCache[voice];
+      } else {
         const res = await fetch("/api/tts", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            text: "សួស្តី នេះគឺជាសំឡេងសាកល្បងដែលលោកអ្នកអាចជ្រើសរើសបាន។",
+            text: "សួស្តី នេះគឺជាសំឡេងសាកល្បង។",
             voice: voice,
-            style: "short Khmer preview"
+            style: "preview"
           })
         });
 
-        if (!res.ok) {
-          throw new Error("Preview failed");
-        }
-
         const blob = await res.blob();
-        const audioUrl = URL.createObjectURL(blob);
-
+        audioUrl = URL.createObjectURL(blob);
         previewCache[voice] = audioUrl;
-
-        new Audio(audioUrl).play();
-        statusBox.innerText = `${name} preview playing.`;
-
-      } catch (err) {
-        console.error(err);
-        statusBox.innerText = "Preview failed.";
-        alert("Preview failed.");
-      } finally {
-        playBtn.disabled = false;
-        playBtn.innerText = "▶";
       }
-    });
+
+      const audio = new Audio(audioUrl);
+      window.currentAudio = audio;
+
+      // playing
+      playBtn.innerText = "❚❚";
+
+      audio.onended = () => {
+        playBtn.innerText = "▶";
+        window.currentAudio = null;
+      };
+
+      audio.play();
+
+    } catch (err) {
+      console.error(err);
+      playBtn.innerText = "▶";
+    }
+  });
 });
 
 document.addEventListener("click", (e) => {
