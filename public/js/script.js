@@ -1,6 +1,6 @@
 let selectedVoice = "Kore";
 let selectedVoiceName = "Bora (Calm)";
-
+const previewCache = {};
 const textarea = document.getElementById("text");
 const counter = document.getElementById("charCount");
 const statusBox = document.getElementById("status");
@@ -11,6 +11,7 @@ const voiceDropdown = document.getElementById("voiceDropdown");
 const voiceSelected = document.getElementById("voiceSelected");
 const selectedVoiceNameEl = document.getElementById("selectedVoiceName");
 const voiceOptions = document.querySelectorAll(".voice-option");
+
 
 textarea.addEventListener("input", () => {
   counter.innerText = textarea.value.length;
@@ -35,48 +36,55 @@ voiceOptions.forEach((option) => {
   });
 
   playBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
+      e.stopPropagation();
 
-    const voice = option.dataset.voice;
-    const name = option.dataset.name;
+      const voice = option.dataset.voice;
+      const name = option.dataset.name;
 
-    playBtn.disabled = true;
-    playBtn.innerText = "⏳";
-    statusBox.innerText = `Previewing ${name}...`;
-
-    try {
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          text: "សួស្តី នេះគឺជាសំឡេងសាកល្បង។",
-          voice: voice,
-          style: "short Khmer preview"
-        })
-      });
-
-      if (!res.ok) {
-        throw new Error("Preview failed");
+      if (previewCache[voice]) {
+        new Audio(previewCache[voice]).play();
+        statusBox.innerText = `${name} preview playing.`;
+        return;
       }
 
-      const blob = await res.blob();
-      const audioUrl = URL.createObjectURL(blob);
-      const audio = new Audio(audioUrl);
+      playBtn.disabled = true;
+      playBtn.innerText = "⏳";
+      statusBox.innerText = `Creating ${name} preview...`;
 
-      await audio.play();
+      try {
+        const res = await fetch("/api/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            text: "សួស្តី នេះគឺជាសំឡេងសាកល្បង។",
+            voice: voice,
+            style: "short Khmer preview"
+          })
+        });
 
-      statusBox.innerText = `${name} preview playing.`;
-    } catch (err) {
-      console.error(err);
-      statusBox.innerText = "Preview failed.";
-      alert("Preview failed.");
-    } finally {
-      playBtn.disabled = false;
-      playBtn.innerText = "▶";
-    }
-  });
+        if (!res.ok) {
+          throw new Error("Preview failed");
+        }
+
+        const blob = await res.blob();
+        const audioUrl = URL.createObjectURL(blob);
+
+        previewCache[voice] = audioUrl;
+
+        new Audio(audioUrl).play();
+        statusBox.innerText = `${name} preview playing.`;
+
+      } catch (err) {
+        console.error(err);
+        statusBox.innerText = "Preview failed.";
+        alert("Preview failed.");
+      } finally {
+        playBtn.disabled = false;
+        playBtn.innerText = "▶";
+      }
+    });
 });
 
 document.addEventListener("click", (e) => {
